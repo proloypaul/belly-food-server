@@ -18,8 +18,17 @@ async function run(){
     try{
         await client.connect();
         const database = client.db('belly-food');
+        const usersCollection = database.collection('users');
         const foodscollection = database.collection('foods');
 
+        // post user data into mongodb
+        app.post('/users', async(req, res) => {
+            const userData = req.body;
+            console.log(userData);
+            const result = await usersCollection.insertOne(userData);
+            res.json(result);
+            console.log(result);
+        })
         // get data from mongodb 
         app.get('/foods', async(req, res) => {
             const cursor = foodscollection.find({});
