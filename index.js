@@ -20,14 +20,25 @@ async function run(){
         const database = client.db('belly-food');
         const usersCollection = database.collection('users');
         const foodscollection = database.collection('foods');
-
+        const cartsCollection = database.collection('carts');
+        
         // post user data into mongodb
         app.post('/users', async(req, res) => {
             const userData = req.body;
-            console.log(userData);
+            // console.log(userData);
             const result = await usersCollection.insertOne(userData);
             res.json(result);
-            console.log(result);
+            // console.log(result);
+        })
+        // check user and update 
+        app.put('/users', async(req, res) => {
+            const userData = req.body;
+            // console.log(userData);
+            const filter = {email: userData.email};
+            const options = {upsert: true};
+            const updateDoc = {$set: userData};
+            const result = await usersCollection.updateOne(filter, updateDoc, options);
+            res.json(result);
         })
         // get data from mongodb 
         app.get('/foods', async(req, res) => {
@@ -46,6 +57,23 @@ async function run(){
             res.json(result);
             // console.log("pass data successfully");
         })
+
+        // post cart to mongodb
+        app.post('/carts', async(req, res) => {
+            const cartsData = req.body;
+            // console.log(cartsData);
+            const result = await cartsCollection.insertOne(cartsData);
+            res.json(result);
+            // console.log(result)
+        })
+        // get all carts data 
+        app.get('/carts', async(req, res) => {
+            const cursor = cartsCollection.find({});
+            const result = await cursor.toArray();
+            res.json(result);
+            // console.log(result);
+        })
+
     }finally{
         // await client.close()
     }
