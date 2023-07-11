@@ -23,6 +23,7 @@ async function run() {
     const usersCollection = database.collection("users");
     const foodscollection = database.collection("foods");
     const cartsCollection = database.collection("carts");
+    const orderInformation = database.collection('orderInformantion')
 
     // post user data into mongodb
     app.post("/users", async (req, res) => {
@@ -102,6 +103,15 @@ async function run() {
       res.json(result);
       //   console.log(result);
     });
+
+    // Post order to database
+    app.post("/orderinformation", async(req, res) => {
+      const orderData = req.body;
+      // console.log(orderData);
+      const result = await orderInformation.insertOne(orderData)
+      res.json(result)
+      // console.log(result)
+    }) 
   } finally {
     // await client.close()
   }
