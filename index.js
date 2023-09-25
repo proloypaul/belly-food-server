@@ -85,9 +85,8 @@ async function run() {
     // get cart using email
     app.get("/carts/:email", async (req, res) => {
       const useableUser = req.params.email;
-      // console.log(useableUser)
+      // console.log("get email ",useableUser)
       const query = { email: useableUser };
-      //   console.log(query);
       const cursor = cartsCollection.find(query);
       const result = await cursor.toArray();
       res.json(result);
@@ -104,6 +103,15 @@ async function run() {
       //   console.log(result);
     });
 
+    // Delete an User all cart from Database
+    app.delete("/carts/:email", async (req, res) => {
+      const dltEmail = req.params.email
+      // console.log("dltEmail name", dltEmail)
+      const query = {email: dltEmail}
+      const result = await cartsCollection.deleteMany(query)
+      res.json(result)
+      console.log("dlt email from cart", result)
+    }) 
     // Post order to database
     app.post("/orderinformation", async(req, res) => {
       const orderData = req.body;
@@ -112,6 +120,17 @@ async function run() {
       res.json(result)
       // console.log(result)
     }) 
+
+    // Get Indicate user from Database
+    app.get("/orderinformation/:email", async(req, res) => {
+      const collectedOrderEmail = req.params.email;
+      const query = {email: collectedOrderEmail}
+      // console.log("collectedOrderEmail", collectedOrderEmail)
+      const cursor = orderInformation.find(query);
+      const result = await cursor.toArray(); 
+      res.json(result)
+    })
+
   } finally {
     // await client.close()
   }
