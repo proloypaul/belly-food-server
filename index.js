@@ -58,7 +58,7 @@ async function run() {
     // get data from mongodb using id
     app.get("/foods/:id", async (req, res) => {
       const foodId = req.params.id;
-      // console.log("food single id", foodId);
+      console.log("food single id", foodId);
       const query = { _id: new ObjectId(foodId) };
       const result = await foodscollection.findOne(query);
       res.json(result);
@@ -106,11 +106,12 @@ async function run() {
     // Delete an User all cart from Database
     app.delete("/carts/:email", async (req, res) => {
       const dltEmail = req.params.email
-      // console.log("dltEmail name", dltEmail)
-      const query = {email: dltEmail}
+      console.log("dltEmail name", dltEmail)
+      const query = {"email": dltEmail}
       const result = await cartsCollection.deleteMany(query)
       res.json(result)
       console.log("dlt email from cart", result)
+
     }) 
     // Post order to database
     app.post("/orderinformation", async(req, res) => {
@@ -120,6 +121,12 @@ async function run() {
       res.json(result)
       // console.log(result)
     }) 
+
+    app.get("/orderinformation", async(req, res) => {
+      const cursor = orderInformation.find();
+      const result = await cursor.toArray(); 
+      res.json(result)
+    })
 
     // Get Indicate user from Database
     app.get("/orderinformation/:email", async(req, res) => {
@@ -131,6 +138,17 @@ async function run() {
       res.json(result)
     })
 
+    // delete order from database
+    app.delete("/orderinformation/:id", async (req, res) => {
+      const dltId = req.params.id;
+      // console.log("dlt id", dltId);
+      const query = { _id: new ObjectId(dltId) };
+      const result = await orderInformation.deleteOne(query);
+      res.json(result);
+      //   console.log(result);
+    });
+
+
   } finally {
     // await client.close()
   }
@@ -141,5 +159,5 @@ app.get("/", (req, res) => {
   res.send(`server running successfully port: ${port}`);
 });
 app.listen(port, () => {
-  console.log(`belly-food server running`);
+  console.log(`belly-food server running: ${port}`);
 });
