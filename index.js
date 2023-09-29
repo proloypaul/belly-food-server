@@ -24,6 +24,7 @@ async function run() {
     const foodscollection = database.collection("foods");
     const cartsCollection = database.collection("carts");
     const orderInformation = database.collection('orderInformantion')
+    const reviewsCollection = database.collection('reviews')
 
     // post user data into mongodb
     app.post("/users", async (req, res) => {
@@ -148,6 +149,14 @@ async function run() {
       //   console.log(result);
     });
 
+    // reviews collection methods
+    app.post("/reviews", async(req, res) => {
+      const reviewsData = req.body;
+      // console.log("reviews data", reviewsData);
+      const result = await reviewsCollection.insertOne(reviewsData)
+      res.json(result)
+      // console.log(result)
+    })
 
   } finally {
     // await client.close()
