@@ -56,6 +56,16 @@ async function run() {
       // console.log("collected foods")
     });
 
+    app.get("/searchfoods", async (req, res) => {
+      const searchName = req.query.search;
+      // console.log("search name ", searchName );
+      // const query = { $text: { $search: searchName } }
+      const cursor = foodscollection.find({name: searchName})
+      const result = await cursor.toArray();
+      res.json(result);
+    });
+
+
     // get data from mongodb using id
     app.get("/foods/:id", async (req, res) => {
       const foodId = req.params.id;
@@ -159,7 +169,7 @@ async function run() {
     })
 
     app.get("/reviews", async(req, res) => {
-      const cursor = reviewsCollection.find();
+      const cursor = reviewsCollection.find({}).limit(10);
       const result = await cursor.toArray(); 
       res.json(result)
     })
