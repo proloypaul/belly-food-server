@@ -57,10 +57,13 @@ async function run() {
     });
 
     app.get("/searchfoods", async (req, res) => {
-      const searchName = req.query.search;
+      const searchName = req.query.searchTerm;
       // console.log("search name ", searchName );
       // const query = { $text: { $search: searchName } }
-      const cursor = foodscollection.find({name: searchName})
+      const cursor = foodscollection.find({name: {
+        $regex: searchName,
+        $options: 'i',
+        }})
       const result = await cursor.toArray();
       res.json(result);
     });
