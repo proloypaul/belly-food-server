@@ -48,6 +48,29 @@ async function run() {
       );
       res.json(result);
     });
+    // update user with admin role 
+    app.put("/users/admin", async (req, res) => {
+      const adminData = req.body
+      // console.log("adminData", adminData.email)
+      const updatedData = {email: adminData.email}
+      const updateDoc = {$set: {role: "admin"}}
+      const result = await usersCollection.updateOne(updatedData, updateDoc)
+      res.json(result)
+      // console.log(result)
+    })
+
+    // check admin role using email
+    app.get("/users/:email", async (req, res) => {
+      const userEmail = req.params.email
+      const query = {email: userEmail}
+      const result = await usersCollection.findOne(query)
+      let isAdmin = false 
+      if(result?.role === 'admin'){
+        isAdmin = true 
+      }
+      res.json({admin: isAdmin})
+    }) 
+
     // get data from mongodb
     app.get("/foods", async (req, res) => {
       const cursor = foodscollection.find({});
@@ -118,13 +141,13 @@ async function run() {
     });
 
     // Delete an User all cart from Database
-    app.delete("/carts/:email", async (req, res) => {
+    app.delete("/dltCarts/:email", async (req, res) => {
       const dltEmail = req.params.email
-      console.log("dltEmail name", dltEmail)
+      // console.log("dltEmail name", dltEmail)
       const query = {"email": dltEmail}
       const result = await cartsCollection.deleteMany(query)
       res.json(result)
-      console.log("dlt email from cart", result)
+      // console.log("dlt email from cart", result)
 
     }) 
     // Post order to database
