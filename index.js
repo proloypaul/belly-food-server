@@ -58,7 +58,11 @@ async function run() {
       res.json(result)
       // console.log(result)
     })
-
+    app.get("/users", async (req, res) => {
+      const cursor = usersCollection.find({})
+      const result = await cursor.toArray()
+      res.send(result)
+    })
     // check admin role using email
     app.get("/users/:email", async (req, res) => {
       const userEmail = req.params.email
@@ -69,7 +73,15 @@ async function run() {
         isAdmin = true 
       }
       res.json({admin: isAdmin})
-    }) 
+    })
+    app.delete("/users/:id", async (req, res) => {
+      const dltId = req.params.id;
+      // console.log("dlt id", dltId);
+      const query = { _id: new ObjectId(dltId) };
+      const result = await usersCollection.deleteOne(query);
+      res.json(result);
+      //   console.log(result);
+    }); 
 
     // get data from mongodb
     app.get("/foods", async (req, res) => {
@@ -90,8 +102,13 @@ async function run() {
       const result = await cursor.toArray();
       res.json(result);
     });
-
-
+    // post food into database
+    app.post("/foods", async(req, res) => {
+      const foodData = req.body
+      // console.log("foodData", foodData)
+      const result = await foodscollection.insertOne(foodData)
+      res.json(result)
+    })
     // get data from mongodb using id
     app.get("/foods/:id", async (req, res) => {
       const foodId = req.params.id;
@@ -100,6 +117,15 @@ async function run() {
       const result = await foodscollection.findOne(query);
       res.json(result);
       // console.log("pass data successfully");
+    });
+    // delete food 
+    app.delete("/foods/:id", async (req, res) => {
+      const dltId = req.params.id;
+        // console.log("dlt id", dltId);
+      const query = { _id: new ObjectId(dltId) };
+      const result = await foodscollection.deleteOne(query);
+      res.json(result);
+      //   console.log(result);
     });
 
     // post cart to mongodb
@@ -199,6 +225,17 @@ async function run() {
       const result = await cursor.toArray(); 
       res.json(result)
     })
+
+    // delete user review
+    app.delete("/reviews/:id", async (req, res) => {
+      const dltId = req.params.id;
+      // console.log("dlt id", dltId);
+      const query = { _id: new ObjectId(dltId) };
+      const result = await reviewsCollection.deleteOne(query);
+      res.json(result);
+      //   console.log(result);
+    });
+
 
   } finally {
     // await client.close()
